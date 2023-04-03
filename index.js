@@ -4,14 +4,25 @@ const express = require('express');
 const app = express();
 //Definir que la app usara la lectura de json
 app.use(express.json());
-//Creacion de funcion para sumar a traves de get
-app.get(
-    '/sumar',
-    (req,res) => {
-        console.log("Alguien se conecto a la ruta ")
-        res.json("Hola!!");
+
+app.use(function(req, res, next){
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "POST");
+        res.header("Access-Control-Allow-Headers", "Content-Type");
+        next();        
     }
 );
+
+//Creacion de funcion para sumar a traves de post
+app.post(
+    '/sumar',
+    (req, res) => {
+        const {numero_1, numero_2} = req.body;
+        var sumar = parseFloat(numero_1) + parseFloat(numero_2);
+        console.log(req.body);
+        res.json(sumar)
+    }
+)
 //Creacion de funcion para restar a traves de post
 app.post(
     '/restar',
@@ -19,7 +30,17 @@ app.post(
         const {numero_1, numero_2} = req.body;
         var restar = numero_1 -numero_2;
         console.log(req.body);
-        res.json("Ok! " + restar)
+        res.json(restar)
+    }
+)
+//Multiplicar a traves de post
+app.post(
+    '/multiplicar',
+    (req, res) => {
+        const {numero_1, numero_2} = req.body;
+        var dividir = numero_1 * numero_2;
+        console.log(req.body);
+        res.json(dividir)
     }
 )
 //Dividir a traves de post
@@ -27,9 +48,13 @@ app.post(
     '/dividir',
     (req, res) => {
         const {numero_1, numero_2} = req.body;
-        var dividir = numero_1 / numero_2;
+        if(numero_1 == 0 || numero_2 == 0){
+            dividir = "Indivisible por 0!!!"
+        }else{
+            var dividir = numero_1 / numero_2;
+        }
         console.log(req.body);
-        res.json("Ok! " + dividir)
+        res.json(dividir)
     }
 )
 
@@ -58,6 +83,6 @@ app.post(
 app.listen(
     3000,
     () => {
-        console.log("Servidor ejecutandose en el pueto 3000");
+        console.log("Servidor ejecutandose en el puerto 3000");
     }
 );
